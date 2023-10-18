@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\Pokemon;
 
 class PokemonController extends Controller
 {
@@ -14,26 +15,25 @@ class PokemonController extends Controller
      */
     public function getPokemonList(Request $request): JsonResponse
     {
-        $response = Http::get('https://pokeapi.co/api/v2/pokemon?limit=20');
-        $data = $response->json();
 
-        $pokemonData = [];
+        $paged = $_GET['paged'];
 
-        foreach ($data['results'] as $result) {
-            $pokemonResponse = Http::get($result['url']);
-            $pokemon = $pokemonResponse->json();
+        $perPage = 20;
 
-            // Get the requested data for each individual Pokémon
-            $pokemonData[] = [
-                'name' => $pokemon['name'],
-                'id' => $pokemon['id'],
-                'height' => $pokemon['height'],
-                'weight' => $pokemon['weight'],
-                'image_url' => $pokemon['sprites']['front_default'],
-                'types' => $pokemon['types'],
-            ];
-        }
+        $currentPage = $request->input('page', $paged);
 
-        return response()->json($pokemonData);
+        $offset = ($currentPage - 1) * $perPage;
+
+        $pokemons = Pokemon::skip($offset)->take($perPage)->get();
+
+        $total = Pokemon::count();
+
+        $response = [
+            'pokemons' => $pokemons,
+            'current_page' => $currentPage,
+            'total' => $total,
+        ];
+
+        return response()->json($response);
     }
 }
