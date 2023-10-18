@@ -19,4 +19,8 @@ class Pokemon extends Model
         'image',
         'types',
     ];
+
+    protected $casts = [
+        'types' => 'json',
+    ];
 }
