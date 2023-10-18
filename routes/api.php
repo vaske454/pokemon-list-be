@@ -19,4 +19,4 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::middleware(['auth:sanctum'])->get('/pokemon-list', [PokemonController::class, 'getPokemonList']);
+Route::get('/pokemon-list', [PokemonController::class, 'getPokemonList']);
