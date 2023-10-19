@@ -16,7 +16,7 @@ class PokemonController extends Controller
     public function getPokemonList(Request $request): JsonResponse
     {
 
-        $paged = $_GET['paged'];
+        $paged = $_GET['paged'] ?? 1;
 
         $perPage = 20;
 
